@@ -1,6 +1,7 @@
 import camelot
 import tabula
 import streamlit as st
+import re
 
 # Subject, Start date, Start time, End date, End Time, All Day Event, Description, Location, Private,
 # MTH0000, 04/25/2021, 8:00 PM, 04/25/2021, 10:00 PM, False,"DEMO", , False
@@ -33,8 +34,10 @@ df.columns = df.iloc[0]
 df.drop(0, inplace=True)
 # df.reset_index(inplace=True)
 # df = df.set_index('index')
-print(df)
+print(df.reset_index(drop=True))
+print(df.columns)
 print(df.iloc[0])
+# print(df.iloc[0])
 # print(list(tables[0].df.index))
 # print(list(tables[0].df.columns))
 
@@ -43,3 +46,11 @@ print(df.iloc[0])
 
 # print(list(umt_table[0].df.index))
 # print(list(umt_table[0].df.columns))
+
+def rename_index(columns):
+    new_name = [(re.match(r"(?P<column_name>\w+)(?= .+)|([\d]{1,2}-[\d]{1,2})", column)).group(0) for column in columns]
+    return new_name
+
+df.columns = rename_index(df.columns)
+print(df.columns)
+print(df)
