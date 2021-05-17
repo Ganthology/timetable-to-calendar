@@ -1,0 +1,11 @@
+1. receive pdf upload
+2. make the column header = row[0], then drop row[0] ✅
+3. change the column[0] name to DAY
+4. set index to DAY ✅
+5. define function to clean subjects data ✅
+6. apply the cleaning function to the df/each data ✅
+7. define function to combine consecutive subjects for each DAY
+8. Since there is 7 days, so there will be 7dfs, combine take place in the column headers
+9. Append the day, time, subject to new output df
+10. 
+-1. Export as csv, download csv

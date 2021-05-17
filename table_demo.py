@@ -1,3 +1,4 @@
+from PyPDF2.generic import TreeObject
 import camelot
 import tabula
 import streamlit as st
@@ -18,20 +19,17 @@ import pandas as pd
 # date = pd.Timestamp("2019-09-09")
 # print(date.day_name()) >>> Monday
 
+# streamlit date picker widget
+# d = st.date_input("When's your birthday",datetime.date(2019, 7, 6))
+
 file = "/Users/ganthology/Desktop/semester2_2020:2021.pdf"
 file2 = "./timetables-pdf/cass timetable sem 4.pdf"
-# umt = "/Users/ganthology/Downloads/umt_semester_timetable(dragged).pdf"
 
 tables = camelot.read_pdf(file)
 table2 = camelot.read_pdf(file2)
-# tables2 = tabula.read_pdf(file)
-# umt_table = camelot.read_pdf(umt)
-# umt_table2 = tabula.read_pdf(umt)
-
-# print(tables2)
-# print(umt_table2)
 
 def rename_headers(columns):
+    # rename the headers so only left with the first part, the rest after space are dumped
     new_name = [(re.match(r"(?P<column_name>\w+)(?= .+)|([\d]{1,2}-[\d]{1,2})", column)).group(0) for column in columns]
     return new_name
 
@@ -51,17 +49,6 @@ df.drop(0, inplace=True)
 # df.reset_index(inplace=True)
 # df = df.set_index('index')
 df.reset_index(drop=True)
-# print(df.columns)
-# print(df.iloc[0])
-# print(df.iloc[0])
-# print(list(tables[0].df.index))
-# print(list(tables[0].df.columns))
-
-# print(f"Tables: {umt_table.n}")
-# print(umt_table.df)
-
-# print(list(umt_table[0].df.index))
-# print(list(umt_table[0].df.columns))
 
 def get_subject(data):
     if data == '':
@@ -76,3 +63,47 @@ df = df[df["TIME"]!='']
 df.set_index("TIME", inplace=True)
 
 print(df.applymap(lambda x: get_subject(x)))
+
+df = df.applymap(lambda x: get_subject(x))
+
+print(df.iloc[0])
+monday = df.iloc[0]
+# uniq_mon = monday.where(monday != '').dropna()
+uniq_mon = monday[monday!=''].reset_index()
+# rename the index column name to "time"
+# uniq_mon.rename(columns = {"index":"time"}, inplace=True)
+uniq_mon.columns = ['time','subject']
+
+print(uniq_mon["time"])
+
+# functions to group subjects with consecutive time
+# idea outline:
+# def function(row):
+#     the row format should be "subject_name start date end date time(with dash)"
+#     row[time] split to "start time" and "end time" column
+#     for current row and next row, if the subject_name is equal, and (current end time equal to next start time) then merge
+
+def split_time(row):
+    # time_col = row["time"]
+    time = re.match(r"([\d]{1,2})-([\d]{1,2})", row["time"])
+    row["start_time"] = time.group(1)
+    row["end_time"] = time.group(2)
+    return row
+
+uniq_mon = uniq_mon.apply(split_time, axis=1).drop(columns=['time'])
+print(uniq_mon)
+
+# new dataframe for each day
+grouped = uniq_mon.groupby("subject")
+newDf = {
+    "subject":[],
+    "start_time":[],
+    "end_time":[]
+}
+
+for group,data in grouped:
+    newDf["subject"].append(data.iloc[0,0])
+    newDf["start_time"].append(data.iloc[0,1])
+    newDf["end_time"].append(data.iloc[-1,2])
+newDf = pd.DataFrame(newDf)
+print(newDf)
