@@ -203,7 +203,6 @@ if uploaded_file is not None:
         if not newDf.empty:
             newDf = newDf.apply(format_time, axis=1)
             list.append(newDf)
-
     if list:
         result = pd.concat(list).sort_values(by="start_date").reset_index(drop=True)
         result.columns = ['Subject', 'Start Date', 'Start Time', 'End Date', 'End Time']
