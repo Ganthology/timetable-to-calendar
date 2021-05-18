@@ -1,6 +1,4 @@
 camelot-py
-camelot-py[cv]
-camelot-py[all]
 pandas
 streamlit
 tk
