@@ -3,3 +3,4 @@ pandas
 streamlit
 tk
 ghostscript
+opencv-python
