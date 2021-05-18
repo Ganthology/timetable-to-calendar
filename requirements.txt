@@ -1,5 +1,0 @@
-camelot-py[cv]
-pandas
-streamlit
-tk
-ghostscript
