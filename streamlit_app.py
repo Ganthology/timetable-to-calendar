@@ -104,7 +104,7 @@ uploaded_file = st.file_uploader("Upload Timetable PDF", type='pdf')
 """
 #### This app does not work for every timetable pdf file, currently available for:
 
-- UPM
+- Universiti Putra Malaysia
 
 ## Date Section
 """
