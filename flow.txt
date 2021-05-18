@@ -9,3 +9,5 @@
 9. Append the day, time, subject to new output df
 10. 
 -1. Export as csv, download csv
+
+can drop the day row is the whole row is empty

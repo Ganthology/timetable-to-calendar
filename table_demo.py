@@ -1,4 +1,3 @@
-from PyPDF2.generic import TreeObject
 import camelot
 import tabula
 import streamlit as st
@@ -10,7 +9,7 @@ import pandas as pd
 # MTH0000, 04/25/2021, 8:00 PM, 04/25/2021, 10:00 PM, False,"DEMO", , False
 
 # # User input (Semester Start date, End date), sem break date/period]
-# pd.date_range(start="2018-09-09",end="2020-02-02")
+# pd.date_range(start="2018-09-09",end="2020-02-02",freq="W-SUN")
 # pd.date_range(start= start_date, end= end_date)
 
 # sembreak = pd.date_range(start="", end="")
@@ -38,16 +37,16 @@ df = tables[0].df
 df2 = table2[0].df
 
 
-df2.columns = rename_headers(df.iloc[0])
-df2.drop(0, inplace=True)
-df2.reset_index(drop=True)
+# df2.columns = rename_headers(df.iloc[0])
+# df2.drop(0, inplace=True)
+# df2.reset_index(drop=True)
 
-print(df2)
+# print(df2)
 
 df.columns = df.iloc[0]
+print(df)
 df.drop(0, inplace=True)
-# df.reset_index(inplace=True)
-# df = df.set_index('index')
+print(df)
 df.reset_index(drop=True)
 
 def get_subject(data):
@@ -57,24 +56,22 @@ def get_subject(data):
     return subject.group(0)
 
 df.columns = rename_headers(df.columns)
-# print(df.columns)
-# print(df)
+# Drop empty columns
 df = df[df["TIME"]!='']
 df.set_index("TIME", inplace=True)
 
-print(df.applymap(lambda x: get_subject(x)))
+# print(df.applymap(lambda x: get_subject(x)))
 
 df = df.applymap(lambda x: get_subject(x))
 
-print(df.iloc[0])
+# print(df.iloc[0])
 monday = df.iloc[0]
-# uniq_mon = monday.where(monday != '').dropna()
+# drop empty rows
 uniq_mon = monday[monday!=''].reset_index()
 # rename the index column name to "time"
-# uniq_mon.rename(columns = {"index":"time"}, inplace=True)
 uniq_mon.columns = ['time','subject']
 
-print(uniq_mon["time"])
+# print(uniq_mon["time"])
 
 # functions to group subjects with consecutive time
 # idea outline:
@@ -82,6 +79,7 @@ print(uniq_mon["time"])
 #     the row format should be "subject_name start date end date time(with dash)"
 #     row[time] split to "start time" and "end time" column
 #     for current row and next row, if the subject_name is equal, and (current end time equal to next start time) then merge
+#     take the first start_time merge with last end_time   
 
 def split_time(row):
     # time_col = row["time"]
@@ -90,8 +88,8 @@ def split_time(row):
     row["end_time"] = time.group(2)
     return row
 
+# split the time column to [start_time],[end_time]
 uniq_mon = uniq_mon.apply(split_time, axis=1).drop(columns=['time'])
-print(uniq_mon)
 
 # new dataframe for each day
 grouped = uniq_mon.groupby("subject")
@@ -106,4 +104,4 @@ for group,data in grouped:
     newDf["start_time"].append(data.iloc[0,1])
     newDf["end_time"].append(data.iloc[-1,2])
 newDf = pd.DataFrame(newDf)
-print(newDf)
+# print(newDf)
