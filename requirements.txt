@@ -1,4 +1,4 @@
-camelot-py
+camelot-py[cv]
 pandas
 streamlit
 opencv-python
