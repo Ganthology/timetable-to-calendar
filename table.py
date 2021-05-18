@@ -27,7 +27,7 @@ def format_time(row):
     row['start_time'] = int(row['start_time'])
     row['end_time'] = int(row['end_time'])
     
-    quotient = row['start_time']/12
+    quotient = row['start_time']//12
     remainder = row['start_time']%12
     if quotient == 1:
         meridiem = "PM"
@@ -38,7 +38,7 @@ def format_time(row):
         remainder = 12
     row["start_time"] = f"{remainder}:00 {meridiem}"
 
-    quotient = row['end_time']/12
+    quotient = row['end_time']//12
     remainder = row['end_time']%12
     if quotient == 1:
         meridiem = "PM"
@@ -102,21 +102,44 @@ for i, idx in enumerate(index):
 
     # new dataframe for each day
     grouped = uniq_subjects.groupby("subject")
+    # newDf = {
+    #     "subject":[],
+    #     "start_time":[],
+    #     "end_time":[]
+    # }
+
+    # for group,data in grouped:
+    #     newDf["subject"].append(data.iloc[0,0])
+    #     newDf["start_time"].append(data.iloc[0,1])
+    #     newDf["end_time"].append(data.iloc[-1,2])
+
     newDf = {
         "subject":[],
+        "start_date":[],
         "start_time":[],
-        "end_time":[]
+        "end_date":[],
+        "end_time":[],
     }
+    for i in date_range:
+        for group,data in grouped:
+            newDf["subject"].append(data.iloc[0,0])
+            newDf["start_time"].append(data.iloc[0,1])
+            newDf["end_time"].append(data.iloc[-1,2])        
 
-    for group,data in grouped:
-        newDf["subject"].append(data.iloc[0,0])
-        newDf["start_time"].append(data.iloc[0,1])
-        newDf["end_time"].append(data.iloc[-1,2])
+            newDf['start_date'].append(i)
+            newDf['end_date'].append(i)
 
     newDf = pd.DataFrame(newDf)
+    # df.loc[~df.index.isin(exclusion_dates)]
+    newDf = newDf.loc[~newDf["start_date"].isin(sembreak)]
     if not newDf.empty:
         newDf = newDf.apply(format_time, axis=1)
         list.append(newDf)
 
-result = pd.concat(list)
-# print(result)
+result = pd.concat(list).sort_values(by="start_date").reset_index(drop=True)
+result.columns = ['Subject', 'Start Date', 'Start Time', 'End Date', 'End Time']
+result['All Day Event'] = False
+result['Description'] = "Lecture"
+result['Location'] = ""
+result['Private'] = False
+print(result)
