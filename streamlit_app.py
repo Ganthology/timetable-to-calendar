@@ -190,7 +190,7 @@ if uploaded_file is not None:
                 newDf["start_time"].append(data.iloc[0,1])
                 newDf["end_time"].append(data.iloc[-1,2])        
 
-                newDf['start_date'].apend(i)
+                newDf['start_date'].append(i)
                 newDf['end_date'].append(i)
 
         newDf = pd.DataFrame(newDf)
@@ -218,7 +218,13 @@ if uploaded_file is not None:
         Check the CSV file in excel or Google Sheet before importing to calendar, as the process is irreversible.
         """
         st.markdown(file_download_link(result), unsafe_allow_html=True)
+        """
 
+        ## Feedback
+        Do fill this feedback form if you like my work!
+
+        [Feedback Form](https://forms.gle/3DLemvUE5FNzBJws8)
+        """
 """
 #### Copyright © Gan Boon Kit / UPM
 """
