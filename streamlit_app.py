@@ -81,7 +81,7 @@ def format_time(row):
     return row
 
 def process_pdf(pdf_bytes):
-    with open("tmp.pdf", "wb") as file:
+    with open("/tmp/tmp.pdf", "wb") as file:
         file.write(pdf_bytes.read())
       
     # read pdf using camelot
@@ -190,7 +190,7 @@ if uploaded_file is not None:
                 newDf["start_time"].append(data.iloc[0,1])
                 newDf["end_time"].append(data.iloc[-1,2])        
 
-                newDf['start_date'].apend(i)
+                newDf['start_date'].append(i)
                 newDf['end_date'].append(i)
 
         newDf = pd.DataFrame(newDf)
@@ -203,7 +203,6 @@ if uploaded_file is not None:
         if not newDf.empty:
             newDf = newDf.apply(format_time, axis=1)
             list.append(newDf)
-
     if list:
         result = pd.concat(list).sort_values(by="start_date").reset_index(drop=True)
         result.columns = ['Subject', 'Start Date', 'Start Time', 'End Date', 'End Time']
@@ -218,7 +217,13 @@ if uploaded_file is not None:
         Check the CSV file in excel or Google Sheet before importing to calendar, as the process is irreversible.
         """
         st.markdown(file_download_link(result), unsafe_allow_html=True)
+        """
 
+        ## Feedback
+        Do fill this feedback form if you like my work!
+
+        [Feedback Form](https://forms.gle/3DLemvUE5FNzBJws8)
+        """
 """
 #### Copyright © Gan Boon Kit / UPM
 """

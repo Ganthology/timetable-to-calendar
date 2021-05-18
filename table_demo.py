@@ -1,5 +1,4 @@
 import camelot
-import tabula
 import streamlit as st
 import re
 import numpy as np
