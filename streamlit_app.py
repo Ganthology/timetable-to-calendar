@@ -1,4 +1,4 @@
-import camelot.io as camelot
+import camelot
 import pandas as pd
 import re
 import streamlit as st
