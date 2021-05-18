@@ -81,7 +81,7 @@ def format_time(row):
     return row
 
 def process_pdf(pdf_bytes):
-    with open("tmp.pdf", "wb") as file:
+    with open("/tmp/tmp.pdf", "wb") as file:
         file.write(pdf_bytes.read())
       
     # read pdf using camelot
