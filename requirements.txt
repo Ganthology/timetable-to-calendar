@@ -1,3 +1,5 @@
-camelot
+camelot-py[all]
 pandas
 streamlit
+tk
+ghostscript
