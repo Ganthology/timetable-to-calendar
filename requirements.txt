@@ -1,3 +1,4 @@
 camelot
+camelot-py
 pandas
 streamlit
