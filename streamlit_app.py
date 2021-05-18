@@ -28,7 +28,9 @@ The purpose of this app is to encourage students to use calendar app as their ti
 
 [Link to my GitHub](https://github.com/Ganthology)
 
+
 ## **Upload your timetable(.pdf) here**
+
 """
 # START FUNCTION DEFINITION
 def rename_headers(columns):
@@ -100,6 +102,10 @@ def file_download_link(df):
 uploaded_file = st.file_uploader("Upload Timetable PDF", type='pdf')
 
 """
+#### This app does not work for every timetable pdf file, currently available for:
+
+- UPM
+
 ## Date Section
 """
 start_date = st.date_input("Semester Start Date", datetime.datetime.now(), key="sem_start")
@@ -213,7 +219,7 @@ if uploaded_file is not None:
         """
         st.markdown(file_download_link(result), unsafe_allow_html=True)
 
-        """
-        #### Copyright © Gan Boon Kit 
-        """
+"""
+#### Copyright © Gan Boon Kit / UPM
+"""
 
