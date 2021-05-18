@@ -1,3 +1,5 @@
 camelot-py
 pandas
 streamlit
+opencv-python
+numpy
