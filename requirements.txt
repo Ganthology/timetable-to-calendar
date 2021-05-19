@@ -1,3 +1,0 @@
-streamlit
-pandas
-camelot-py[cv]
