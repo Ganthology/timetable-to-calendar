@@ -1,10 +1,10 @@
-# from numpy import NaN
-import tabula
+import camelot
 import pandas as pd
 import re
 import streamlit as st
-import base64
 import datetime
+import base64
+
 
 """
 # Timetable to Calendar Converter
@@ -32,29 +32,27 @@ The purpose of this app is to encourage students to use calendar app as their ti
 ## **Upload your timetable(.pdf) here**
 
 """
-
-# functions
+# START FUNCTION DEFINITION
 def rename_headers(columns):
     # rename the headers so only left with the first part, the rest after space are dumped
     new_name = [(re.match(r"(?P<column_name>\w+)(?= .+)|([\d]{1,2}-[\d]{1,2})", column)).group(0) for column in columns]
     return new_name
 
 def get_subject(data):
-    if not isinstance(data, str):
+    if data == '':
         return ''
-    subject = re.match(r"^[\w]+", data)
-    return subject.group()
+    subject = re.match(r"(?P<subject>\w+)(?=\s.+)", data)
+    return subject.group(0)
 
+# Split the time column to start_time column and end_time column
 def split_time(row):
-    # time_col = row["time"]
     time = re.match(r"([\d]{1,2})-([\d]{1,2})", row["time"])
     row["start_time"] = time.group(1)
     row["end_time"] = time.group(2)
     return row
 
+# Format time to 0:00 AM format
 def format_time(row):
-    # Subject, Start date, Start time, End date, End Time, All Day Event, Description, Location, Private,
-    # MTH0000, 04/25/2021, 8:00 PM, 04/25/2021, 10:00 PM, False,"DEMO", , False
     row['start_time'] = int(row['start_time'])
     row['end_time'] = int(row['end_time'])
     
@@ -82,6 +80,14 @@ def format_time(row):
 
     return row
 
+def process_pdf(pdf_bytes):
+    with open("/tmp/tmp.pdf", "wb") as file:
+        file.write(pdf_bytes.read())
+      
+    # read pdf using camelot
+    tables = camelot.read_pdf("tmp.pdf", pages="all")
+    return tables    
+
 def file_download_link(df):
     """Generates a link allowing the data in a given panda dataframe to be downloaded
     in:  dataframe
@@ -90,10 +96,10 @@ def file_download_link(df):
     csv = df.to_csv(index=False)
     b64 = base64.b64encode(csv.encode()).decode()  # some strings <-> bytes conversions necessary here
     href = f'<a href="data:file/csv;base64,{b64}" download="class_calendar.csv">Download the Calendar CSV file</a>'
-    return href  
-#end
+    return href    
+# END FUNCTION DEFINITION
 
-file = st.file_uploader("Upload Timetable PDF", type='pdf')
+uploaded_file = st.file_uploader("Upload Timetable PDF", type='pdf')
 
 """
 #### This app does not work for every timetable pdf file, currently available for:
@@ -118,39 +124,43 @@ f"""
 - Your Study Week is from {start_study_week} until {end_study_week}
 """
 
-if file is not None:
-    tables = tabula.read_pdf(file)[0]
+if uploaded_file is not None:
+    # Read pdf table using camelot library
+    # tables = camelot.read_pdf(file)
+    tables = process_pdf(uploaded_file)
 
-    ori = tables
+    # Retrieve the first table read
+    ori = tables[0].df
+
     # Data cleaning
-    # ori.columns = ori.iloc[0]
-    # ori.drop(0, inplace=True)
-    # ori.reset_index(drop=True)
+    ori.columns = ori.iloc[0]
+    ori.drop(0, inplace=True)
+    ori.reset_index(drop=True)
 
     ori.columns = rename_headers(ori.columns)
 
-    # # Drop empty columns/index
-    # ori = ori[ori["TIME"] != np.nan]
-    ori = ori.dropna(subset=['TIME'])
-    print(ori)
+    # Drop empty columns/index
+    ori = ori[ori["TIME"]!='']
     ori.set_index("TIME", inplace=True)
-    print(ori.iloc[0,10])
-    print(type(ori.iloc[0,10]))
 
     # Clean subject values
     ori = ori.applymap(lambda x: get_subject(x))
-    print(ori)
+
     index = ori.index
 
     list = []
 
+    """
+    ## Is This Your Timetable?
+    #### The timetable after cleaning
+    """
+    ori
+
     for i, idx in enumerate(index):
         day = idx[:3].upper()
-
         date_range = pd.date_range(start = start_date, end = end_date, freq = f"W-{day}")
         sembreak = pd.date_range(start=start_break, end=end_break, freq=f"W-{day}")
         study_week = pd.date_range(start=start_study_week, end=end_study_week, freq=f"W-{day}")
-
         df = ori.copy()
         # Select only the row == day
         day = df.iloc[i]
@@ -166,16 +176,6 @@ if file is not None:
 
         # new dataframe for each day
         grouped = uniq_subjects.groupby("subject")
-        # newDf = {
-        #     "subject":[],
-        #     "start_time":[],
-        #     "end_time":[]
-        # }
-
-        # for group,data in grouped:
-        #     newDf["subject"].append(data.iloc[0,0])
-        #     newDf["start_time"].append(data.iloc[0,1])
-        #     newDf["end_time"].append(data.iloc[-1,2])
 
         newDf = {
             "subject":[],
@@ -194,6 +194,8 @@ if file is not None:
                 newDf['end_date'].append(i)
 
         newDf = pd.DataFrame(newDf)
+
+        # remove dates during mid sem break and study week
         # df.loc[~df.index.isin(exclusion_dates)]
         newDf = newDf.loc[~newDf["start_date"].isin(sembreak)]
         newDf = newDf.loc[~newDf["start_date"].isin(study_week)]
