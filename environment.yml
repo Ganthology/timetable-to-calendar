@@ -4,7 +4,7 @@ channels:
 dependencies:
   - altair
   - pandas
-  - camelot-py
+  - camelot-py[cv]
   - anaconda::opencv
   - pip
   - pip:
