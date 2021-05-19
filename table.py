@@ -55,6 +55,7 @@ file = "/Users/ganthology/Desktop/semester2_2020:2021.pdf"
 
 tables = camelot.read_pdf(file)
 
+
 ori = tables[0].df
 print(ori)
 # Data cleaning
