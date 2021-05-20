@@ -222,6 +222,10 @@ if file is not None:
         """
         st.markdown(file_download_link(result), unsafe_allow_html=True)
         """
+        #### First 10 row of the CSV file
+        """
+        st.dataframe(result.head(10))
+        """
 
         ## Feedback
         Do fill this feedback form if you like my work!
