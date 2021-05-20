@@ -24,9 +24,9 @@ The purpose of this app is to encourage students to use calendar app as their ti
 
 4. Import the csv file to your Google Calendar 
 
-[Refer here for Importing CSV file](https://support.google.com/calendar/answer/37118?co=GENIE.Platform%3DDesktop&hl=en)
+[How to import to Google Calendar](https://support.google.com/calendar/answer/37118?co=GENIE.Platform%3DDesktop&hl=en)
 
-[Link to my GitHub](https://github.com/Ganthology)
+[Link to my GitHub repo](https://github.com/Ganthology/timetable-to-calendar)
 
 
 ## **Upload your timetable(.pdf) here**
@@ -40,7 +40,9 @@ def rename_headers(columns):
     return new_name
 
 def get_subject(data):
-    if not isinstance(data, str):
+    if not isinstance(data, str): 
+        return ''
+    if len(data) == 1:
         return ''
     subject = re.match(r"^[\w]+", data)
     return subject.group()
@@ -226,6 +228,7 @@ if file is not None:
         """
         st.dataframe(result.head(10))
         """
+        [How to import to Google Calendar](https://support.google.com/calendar/answer/37118?co=GENIE.Platform%3DDesktop&hl=en)
 
         ## Feedback
         Do fill this feedback form if you like my work!
