@@ -114,7 +114,7 @@ end_study_week = st.date_input("Study Week End Date", datetime.datetime.now(), k
 f"""
 ### Date Checking
 - Your semester is from {start_date} until {end_date}
-- Your Mid Semester Break is from {start_break} until {end_date}
+- Your Mid Semester Break is from {start_break} until {end_break}
 - Your Study Week is from {start_study_week} until {end_study_week}
 """
 
