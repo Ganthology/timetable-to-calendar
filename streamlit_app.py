@@ -11,7 +11,7 @@ import datetime
 
 This app converts timetable pdf to csv file, the csv file can then be exported to Google Calendar.
 
-The purpose of this app is to encourage students to use calendar app as their time management tool.
+This app simplified the process of transforming timetable into calendar app, students don't have to add timetable manually into their calendar app.
 
 -- Boon Kit
 
