@@ -6,7 +6,6 @@ This app simplified the process of transforming timetable into calendar app, stu
 
 The purpose of this app is to encourage students to use calendar app as their time management tool.
 
-(Currently, the deployed streamlit app is not working, will try rewrite the app in flask or Django)
 [Link to the project](https://share.streamlit.io/ganthology/timetable-to-calendar/main)
 
 OR
